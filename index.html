@@ -1,48 +1,328 @@
+`html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Осторожно</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Факт дня | Праздник послушания</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none; /* чтобы текст не выделялся как на плакате */
+        }
+
         body {
-            background: white;
-            height: 100vh;
+            background: #ffffff;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: system-ui, sans-serif;
-            margin: 0;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            padding: 1rem;
         }
-        .text {
+
+        .container {
             text-align: center;
-            padding: 20px;
+            padding: 1.5rem;
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
         }
-        .big {
+
+        /* ----- ГИРЛЯНДА (чистый CSS, без картинок) ----- */
+        .garland {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-bottom: 1.8rem;
+            padding: 0.5rem 0;
+        }
+
+        .light {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #fff, #e00);
+            box-shadow: 0 0 8px 2px rgba(255, 50, 50, 0.7);
+            animation: blink 1.4s infinite alternate ease-in-out;
+        }
+
+        /* разноцветные лампочки */
+        .light:nth-child(1) { background: radial-gradient(circle at 30% 30%, #fff, #ff3b3b); box-shadow: 0 0 10px #ff3b3b; animation-delay: 0s; }
+        .light:nth-child(2) { background: radial-gradient(circle at 30% 30%, #fff, #ffdd44); box-shadow: 0 0 10px #ffcc00; animation-delay: 0.2s; }
+        .light:nth-child(3) { background: radial-gradient(circle at 30% 30%, #fff, #44ff44); box-shadow: 0 0 10px #00cc00; animation-delay: 0.4s; }
+        .light:nth-child(4) { background: radial-gradient(circle at 30% 30%, #fff, #ff8800); box-shadow: 0 0 10px #ff8800; animation-delay: 0.1s; }
+        .light:nth-child(5) { background: radial-gradient(circle at 30% 30%, #fff, #ff44ff); box-shadow: 0 0 10px #ff44ff; animation-delay: 0.3s; }
+        .light:nth-child(6) { background: radial-gradient(circle at 30% 30%, #fff, #3b9eff); box-shadow: 0 0 10px #3b9eff; animation-delay: 0.5s; }
+        .light:nth-child(7) { background: radial-gradient(circle at 30% 30%, #fff, #ff3b3b); animation-delay: 0.15s; }
+        .light:nth-child(8) { background: radial-gradient(circle at 30% 30%, #fff, #ffee44); animation-delay: 0.35s; }
+
+        @keyframes blink {
+            0% { opacity: 0.4; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .fact-header {
             color: #cc0000;
-            font-size: clamp(1.5rem, 8vw, 3.5rem);
-            font-weight: 900;
-            line-height: 1.3;
+            font-size: clamp(0.7rem, 4vw, 0.9rem);
+            margin-bottom: 1rem;
+            letter-spacing: 0.1em;
+            font-weight: 600;
             text-transform: uppercase;
         }
-        .small {
-            color: #333;
-            font-size: clamp(0.7rem, 4vw, 1rem);
-            margin-top: 20px;
+
+        .main-text {
+            color: #cc0000;
+            font-size: clamp(0.85rem, 4.5vw, 1.2rem);
+            font-weight: 400;
+            line-height: 1.65;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        /* КНОПКА — как красная панель "подтверждения" */
+        .celebrate-btn {
+            background: #cc0000;
+            color: white;
+
+border: none;
+            padding: 14px 28px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            font-family: inherit;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: 0.1s linear;
+            box-shadow: 0 6px 0 #7a0000;
+            margin: 1rem 0 1.2rem 0;
+            width: 90%;
+            max-width: 280px;
+            letter-spacing: 1px;
+        }
+
+        .celebrate-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 3px 0 #7a0000;
+        }
+
+        .subtext {
+            color: #cc0000;
+            font-size: clamp(0.7rem, 4vw, 0.85rem);
+            font-weight: 500;
+            text-transform: uppercase;
+            border-top: 1px solid #cc0000;
+            display: inline-block;
+            padding-top: 0.8rem;
             opacity: 0.7;
+            letter-spacing: 1px;
+        }
+
+        /* канва для конфетти поверх всего */
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
         }
     </style>
 </head>
 <body>
-    <div class="text">
-        <div class="big">
-            ТЫ ШО ДОЛБАЕБ<br>
-            ПО НЕЗНАКОМЫМ КЬЮАРАМ<br>
-            ПЕРЕХОДИТЬ
-        </div>
-        <div class="small">
-            великий адъютант
-        </div>
+
+<div class="container">
+    <!-- ГИРЛЯНДА (8 огоньков) -->
+    <div class="garland">
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
     </div>
+
+    <div class="fact-header">
+        ⚡ БРИТАНСКАЯ ПРОПАГАНДА | СЕКРЕТНЫЙ ПЛАКАТ ⚡
+    </div>
+
+    <div class="main-text">
+        В 1939 году Британское министерство информации выпустило три пропагандистских плаката на случай вторжения нацистов. <br><br>
+        Два из них — YOUR COURAGE и FREEDOM IS IN PERIL — расклеили по всей стране. <br><br>
+        Третий, <strong>KEEP CALM AND CARRY ON</strong>, напечатали тиражом 2,5 миллиона экземпляров, но так и не выпустили. Его сочли слишком покровительственным — британцы бы просто разозлились.<br><br>
+        Плакат пролежал в коробках до 2000 года, когда его нашли в букинистическом магазине в Нортумберленде. <br><br>
+        Следующие 25 лет фраза стала главным мемом Британии: от кружек до пародий KEEP CALM AND DRINK TEA.<br><br>
+        То, что должно было успокаивать нацию в момент смертельной опасности, стало символом пафосного лицемерия и сувенирной хуйни. Ирония чистой воды.
+    </div>
+
+    <!-- КНОПКА ПОСЛУШАНИЯ -->
+    <button class="celebrate-btn" id="celebrateButton">Я ПРОЧИТАЛ!</button>
+
+    <div class="subtext">
+        великий адъютант
+    </div>
+</div>
+
+<script>
+    (function() {
+        // создаём звук свистка (без внешних файлов — через Web Audio API)
+        function createWhistleSound() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const now = audioCtx.currentTime;
+            const duration = 0.6;
+            const volume = 0.3;
+            
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.frequency.value = 1450; // высокий свист
+            gainNode.gain.value = 0;
+            
+            // резкий атака и спад — как свисток
+            gainNode.gain.linearRampToValueAtTime(volume, now + 0.02);
+            gainNode.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+            
+            oscillator.start(now);
+            oscillator.stop(now + duration);
+            
+            // чтобы звук точно работал после разрешения аудиоконтекста
+            return audioCtx;
+        }
+
+let audioCtx = null;
+        let isFirstClick = true;
+        
+        function playWhistle() {
+            if (!audioCtx) {
+                audioCtx = createWhistleSound();
+                // на iOS/Android нужно "разбудить" аудиоконтекст
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+            } else {
+                // если контекст уже есть — пересоздаём звук (иначе oscillator уже отработал)
+                const newCtx = createWhistleSound();
+                if (newCtx.state === 'suspended') newCtx.resume();
+                audioCtx = newCtx;
+            }
+        }
+
+        // ----- КОНФЕТТИ (лёгкая библиотека своими руками) -----
+        function startConfetti() {
+            const canvas = document.createElement('canvas');
+            canvas.style.position = 'fixed';
+            canvas.style.top = '0';
+            canvas.style.left = '0';
+            canvas.style.width = '100%';
+            canvas.style.height = '100%';
+            canvas.style.pointerEvents = 'none';
+            canvas.style.zIndex = '10000';
+            document.body.appendChild(canvas);
+            
+            const ctx = canvas.getContext('2d');
+            let width = window.innerWidth;
+            let height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            
+            const particles = [];
+            const colors = ['#ff3b3b', '#ffdd44', '#44ff44', '#ff8800', '#ff44ff', '#3b9eff', '#ffffff', '#cc0000'];
+            
+            for (let i = 0; i < 180; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height - height,
+                    size: Math.random() * 8 + 4,
+                    speedY: Math.random() * 8 + 5,
+                    speedX: (Math.random() - 0.5) * 3,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    rotation: Math.random() * 360,
+                    spin: (Math.random() - 0.5) * 15
+                });
+            }
+            
+            let animationId = null;
+            let startTime = performance.now();
+            const durationMs = 2800;
+            
+            function draw() {
+                const now = performance.now();
+                const elapsed = now - startTime;
+                if (elapsed >= durationMs) {
+                    cancelAnimationFrame(animationId);
+                    canvas.remove();
+                    return;
+                }
+                
+                ctx.clearRect(0, 0, width, height);
+                let remaining = true;
+                for (let p of particles) {
+                    p.y += p.speedY;
+                    p.x += p.speedX;
+                    p.rotation += p.spin;
+                    
+                    if (p.y < height + 50) remaining = true;
+                    
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rotation * Math.PI / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+                    ctx.restore();
+                }
+                
+                animationId = requestAnimationFrame(draw);
+            }
+            
+            draw();
+            
+            // автоочистка канваса при ресайзе (базово)
+            window.addEventListener('resize', () => {
+                if (canvas) {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                    width = canvas.width;
+                    height = canvas.height;
+                }
+            }, { once: true });
+        }
+        
+        // обработчик кнопки
+
+const btn = document.getElementById('celebrateButton');
+        btn.addEventListener('click', () => {
+            // свисток
+            playWhistle();
+            // конфетти
+            startConfetti();
+            
+            // дополнительный визуальный фидбек: кнопка дрыгается
+            btn.style.transform = 'scale(0.98)';
+            setTimeout(() => { btn.style.transform = ''; }, 120);
+            
+            // Можно ещё добавить надпись на секунду, но и так сойдёт
+        });
+        
+        // чтобы не ломались аудиополитики (браузеры требуют первого жеста)
+        document.body.addEventListener('touchstart', function initAudio() {
+            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+        }, { once: true });
+        document.body.addEventListener('click', function initAudioClick() {
+            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+        }, { once: true });
+        
+    })();
+</script>
 </body>
 </html>
+`
